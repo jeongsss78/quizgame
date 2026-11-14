@@ -161,3 +161,59 @@ h2 { font-size: 22px; }
 .mode-chromebook { font-size: 18px; }
 .mode-chromebook .glass { --blur-glass: 8px; }
 .mode-chromebook .btn, .mode-chromebook .input { min-height: 48px; }
+/* ---- 화면 공통 (교사 대시보드, 학생 화면) ---- */
+.page {
+  position: relative; z-index: 1;
+  max-width: 1200px; margin: 0 auto; padding: 24px;
+  display: grid; gap: 16px;
+}
+.page-msg { min-height: 24px; margin: 0; position: relative; z-index: 1; }
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.topbar h1 { margin-bottom: 0; }
+.space { justify-content: space-between; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; position: relative; z-index: 1; }
+@media (max-width: 800px) { .grid-2 { grid-template-columns: 1fr; } }
+.plain-list, .rec-list { list-style: none; margin: 0; padding: 0; }
+.plain-list li { padding: 8px 0; border-bottom: 1px solid var(--color-glass-border); }
+.rec-item {
+  display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; padding: 12px 0; flex-wrap: wrap;
+  border-bottom: 1px solid var(--color-glass-border);
+}
+.select { width: auto; min-width: 120px; }
+.qr-panel { text-align: center; }
+.qr-box { display: inline-block; background: #FFFFFF; padding: 16px; border-radius: var(--radius-card); }
+.qr-box canvas { display: block; width: min(360px, 70vw); height: auto; }
+.code-big { font-size: 40px; font-weight: 700; letter-spacing: 0.2em; color: var(--color-primary-strong); margin: 8px 0; }
+.code-input { font-size: 32px; font-weight: 700; letter-spacing: 0.2em; text-align: center; text-transform: uppercase; height: 72px; }
+.timer { font-size: 32px; font-weight: 700; font-variant-numeric: tabular-nums; margin: 0; }
+.big-num { font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; margin: 0; color: var(--color-primary-strong); }
+.play-head { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+.play-head p { margin: 0; }
+.progress {
+  height: 12px; border-radius: 6px; overflow: hidden; margin-bottom: 12px;
+  background: rgba(255, 255, 255, 0.6); border: 1px solid var(--color-glass-border);
+}
+.progress-bar { height: 100%; width: 0; background: var(--color-accent); }
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { padding: 10px 8px; text-align: left; border-bottom: 1px solid var(--color-glass-border); }
+.table th { color: var(--color-primary-strong); font-weight: 700; }
+.num { text-align: right !important; font-variant-numeric: tabular-nums; }
+.me-row td { font-weight: 700; color: var(--color-primary-strong); }
+.podium { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.podium-item {
+  padding: 16px; text-align: center; border-radius: var(--radius-control);
+  border: 1px solid var(--color-glass-border); background: rgba(255, 255, 255, 0.6);
+}
+.podium-item .rank { font-size: 20px; font-weight: 700; margin: 0; }
+.podium-item .score { font-size: 24px; font-weight: 700; color: var(--color-primary-strong); margin: 0; }
+.char-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.char-btn { min-height: 96px; text-align: center; padding: 28px 8px 12px; }
+.char-btn::before { top: 8px; left: 50%; transform: translateX(-50%); }
+.char-btn[aria-pressed="true"] { padding: 26px 6px 10px; }
+.play-card { width: min(640px, 100%); }
+.q-body { font-size: 22px; line-height: 1.5; margin: 0; color: var(--color-text); }
+.fb-mark { font-size: 24px; font-weight: 700; margin: 0; }
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; text-align: center; }
+.stats p { margin: 0; }
+
