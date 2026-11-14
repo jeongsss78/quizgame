@@ -5,7 +5,13 @@ const $ = id => document.getElementById(id);
 
 const KEY = 'quizStudent';
 const VIEWS = ['view-join', 'view-profile', 'view-wait', 'view-play', 'view-feedback', 'view-end'];
-const CHAR_NAMES = ['곰', '토끼', '고양이', '펭귄', '여우', '사자', '개구리', '부엉이'];
+const CHARACTERS = [
+  { id: 'bear',   name: '곰' },
+  { id: 'rabbit', name: '토끼' },
+  { id: 'cat',    name: '고양이' },
+  { id: 'fox',    name: '여우' },
+  { id: 'panda',  name: '판다' },
+];
 const ERRORS = {
   ROOM_NOT_FOUND: '방을 찾을 수 없어요. 선생님께 코드를 다시 확인하세요.',
   ROOM_ALREADY_STARTED: '이미 시작된 게임이에요.',
@@ -21,7 +27,8 @@ const ERRORS = {
 
 let pendingCode = null;   // 입장 화면에서 확인한 방 코드
 let me = null;            // { roomId, playerId, nickname, characterId, code }
-let selectedChar = null;  // 선택한 캐릭터 번호 (1~8)
+let selectedChar = null;  // 선택한 캐릭터 번호 (1~5)
+let myCorrectCount = 0;   // 현재까지 맞힌 문제 수 (표정 변화용)
 let question = null;      // get_current_question 결과
 let selected = null;      // 객관식 선택 번호 ('1'~'4')
 let answering = false;    // 제출 중 여부
@@ -29,6 +36,14 @@ let offset = 0;           // 서버 시각 - 기기 시각 (ms)
 let timerId = null;       // 문항 제한시간 타이머
 let waitTimer = null;     // 시작 대기 타이머
 let channel = null;       // Realtime 구독
+
+function getCharacterImage(characterId, correctCount) {
+  const char = CHARACTERS[characterId - 1] || CHARACTERS[0];
+  let stage = 1;
+  if (correctCount >= 20) stage = 3;
+  else if (correctCount >= 10) stage = 2;
+  return `./images/${char.id}_${stage}.png`;
+}
 
 function errText(err) {
   return ERRORS[err && err.message] || '문제가 생겼어요. 잠시 후 다시 시도하세요.';
@@ -115,11 +130,19 @@ $('profile-back').onclick = () => {
 
 function buildCharGrid() {
   const grid = $('char-grid');
-  CHAR_NAMES.forEach((name, i) => {
+  grid.innerHTML = '';
+  CHARACTERS.forEach((char, i) => {
     const b = document.createElement('button');
     b.type = 'button';
     b.className = 'choice char-btn';
-    b.textContent = name;
+    b.style.display = 'flex';
+    b.style.flexDirection = 'column';
+    b.style.alignItems = 'center';
+    b.style.gap = '6px';
+    b.innerHTML = `
+      <img src="./images/${char.id}_1.png" alt="${char.name}" style="width: 56px; height: 56px; object-fit: contain;">
+      <span>${char.name}</span>
+    `;
     b.setAttribute('aria-pressed', 'false');
     b.onclick = () => {
       selectedChar = i + 1;
@@ -181,8 +204,9 @@ function watchRoom() {
 
 function showWait(text) {
   clearInterval(timerId);
+  const char = CHARACTERS[me.characterId - 1] || CHARACTERS[0];
   $('wait-text').textContent = text;
-  $('me-line').textContent = `${CHAR_NAMES[me.characterId - 1]} · ${me.nickname}`;
+  $('me-line').textContent = `${char.name} · ${me.nickname}`;
   showView('view-wait');
 }
 
@@ -205,6 +229,7 @@ function startQuestion(data) {
 }
 
 function renderQuestion() {
+  $('my-char-img').src = getCharacterImage(me.characterId, myCorrectCount);
   $('q-index').textContent = `${question.index} / ${question.total}`;
   $('q-type').textContent = question.type === 'mc' ? '객관식' : '초성 서답형';
   $('q-body').textContent = question.body;
@@ -301,6 +326,7 @@ async function submit(timedOut = false) {
 
 function showFeedback(d) {
   clearInterval(timerId);
+  myCorrectCount = d.correct_count || 0;
   const mark = $('fb-mark');
   mark.textContent = d.is_timeout ? '시간이 지났어요' : (d.is_correct ? '정답입니다' : '틀렸어요');
   mark.className = `fb-mark ${d.is_correct ? 'msg-ok' : 'msg-error'}`;
