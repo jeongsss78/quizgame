@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>선생님 로그인 | 단원 정리 퀴즈</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+  <link rel="stylesheet" href="../shared/glass.css">
+</head>
+<body class="mode-projector">
+  <div class="bg-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <main class="page-center">
+    <section class="glass login-card">
+      <h1>선생님 로그인</h1>
+      <p class="muted">비밀코드 4자리를 입력하세요.</p>
+
+      <form id="login-form" novalidate>
+        <fieldset class="pin-row">
+          <legend class="sr-only">비밀코드 4자리</legend>
+          <input class="input pin-input" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="비밀코드 첫째 자리">
+          <input class="input pin-input" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="비밀코드 둘째 자리">
+          <input class="input pin-input" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="비밀코드 셋째 자리">
+          <input class="input pin-input" type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="비밀코드 넷째 자리">
+        </fieldset>
+
+        <button id="submit-btn" class="btn btn-primary btn-lg btn-block" type="submit">로그인</button>
+        <p id="msg" role="alert" aria-live="assertive" style="min-height: 24px; margin: 12px 0 0;"></p>
+      </form>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../shared/config.js"></script>
+  <script src="login.js"></script>
+</body>
+</html>
