@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>게임 입장 | 단원 정리 퀴즈</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
+  <link rel="stylesheet" href="../shared/glass.css">
+</head>
+<body class="mode-chromebook">
+  <div class="bg-orbs" aria-hidden="true"><span></span><span></span><span></span></div>
+
+  <main class="page-center">
+    <section class="glass play-card">
+
+      <!-- 1. 방 코드 -->
+      <div id="view-join" class="stack">
+        <h1>게임 입장</h1>
+        <p class="muted">선생님이 알려 준 6자리 코드를 입력하세요.</p>
+        <label for="code-input">방 코드</label>
+        <input id="code-input" class="input code-input" maxlength="6" autocomplete="off"
+               autocapitalize="characters" spellcheck="false">
+        <button id="join-btn" class="btn btn-primary btn-lg btn-block" type="button">다음</button>
+      </div>
+
+      <!-- 2. 별명과 캐릭터 -->
+      <div id="view-profile" class="stack hidden">
+        <h1>별명과 캐릭터</h1>
+        <label for="nick-input">별명 (한글, 영문, 숫자 1~8자)</label>
+        <input id="nick-input" class="input" maxlength="8" autocomplete="off">
+        <p class="muted">캐릭터를 하나 골라 주세요.</p>
+        <div id="char-grid" class="char-grid"></div>
+        <button id="enter-btn" class="btn btn-primary btn-lg btn-block" type="button">입장하기</button>
+        <button id="profile-back" class="btn btn-block" type="button">코드 다시 입력</button>
+      </div>
+
+      <!-- 3. 대기 및 시작 카운트다운 -->
+      <div id="view-wait" class="stack hidden">
+        <h1>잠시만 기다려요</h1>
+        <p id="wait-text" class="muted"></p>
+        <p id="me-line"></p>
+      </div>
+
+      <!-- 4. 문제 풀기 -->
+      <div id="view-play" class="stack hidden">
+        <div class="row space">
+          <span id="q-index" class="muted"></span>
+          <span id="q-timer" class="timer"></span>
+        </div>
+        <div class="progress" aria-hidden="true"><div id="q-bar" class="progress-bar"></div></div>
+        <p id="q-type" class="muted"></p>
+        <h2 id="q-body" class="q-body"></h2>
+        <p id="q-hint" class="muted"></p>
+        <div id="q-options" class="stack"></div>
+        <input id="q-input" class="input hidden" placeholder="정답을 입력하세요" autocomplete="off">
+        <p id="play-msg" role="alert" aria-live="assertive"></p>
+        <button id="submit-btn" class="btn btn-primary btn-lg btn-block" type="button">제출</button>
+      </div>
+
+      <!-- 5. 즉시 피드백 -->
+      <div id="view-feedback" class="stack hidden">
+        <p id="fb-mark" class="fb-mark"></p>
+        <p id="fb-answer" class="muted"></p>
+        <p id="fb-score"></p>
+        <button id="next-btn" class="btn btn-primary btn-lg btn-block" type="button">다음 문제</button>
+      </div>
+
+      <!-- 6. 결과 -->
+      <div id="view-end" class="stack hidden">
+        <h1>게임 끝</h1>
+        <div class="stats">
+          <div><p class="muted">내 점수</p><p id="my-score" class="big-num"></p></div>
+          <div><p class="muted">내 순위</p><p id="my-rank" class="big-num"></p></div>
+          <div><p class="muted">맞힌 개수</p><p id="my-correct" class="big-num"></p></div>
+        </div>
+        <p id="end-note" class="muted"></p>
+        <table id="all-table" class="table hidden">
+          <thead>
+            <tr><th class="num">순위</th><th>별명</th><th class="num">점수</th><th class="num">맞힌 개수</th></tr>
+          </thead>
+          <tbody id="all-body"></tbody>
+        </table>
+      </div>
+
+      <p id="msg" role="alert" aria-live="assertive" class="msg-error" style="margin: 12px 0 0; min-height: 24px;"></p>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../shared/config.js"></script>
+  <script src="student.js"></script>
+</body>
+</html>
