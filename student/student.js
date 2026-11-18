@@ -18,8 +18,7 @@ const ERRORS = {
   INVALID_NICKNAME: '별명은 한글, 영문, 숫자 1~8자로 입력하세요.',
   BANNED_NICKNAME: '사용할 수 없는 별명이에요. 다른 별명을 입력하세요.',
   NICKNAME_TAKEN: '같은 별명이 있어요. 다른 별명을 입력하세요.',
-  CHARACTER_TAKEN: '이미 선택된 캐릭터예요. 다른 캐릭터를 고르세요.',
-  NICKNAME_OR_CHARACTER_TAKEN: '같은 별명이나 캐릭터가 있어요. 다시 골라 주세요.',
+  INVALID_CHARACTER: '캐릭터를 다시 골라 주세요.',
   ROOM_NOT_RUNNING: '아직 문제를 풀 수 없어요.',
   NOT_CURRENT_QUESTION: '문제 정보가 바뀌었어요. 화면을 다시 불러옵니다.',
   NOT_PLAYER: '방에 다시 입장해 주세요.',
@@ -37,12 +36,16 @@ let timerId = null;       // 문항 제한시간 타이머
 let waitTimer = null;     // 시작 대기 타이머
 let channel = null;       // Realtime 구독
 
+function charImagePath(charId, stage) {
+  return `./images/${charId}_${stage}.png`;
+}
+
 function getCharacterImage(characterId, correctCount) {
   const char = CHARACTERS[characterId - 1] || CHARACTERS[0];
   let stage = 1;
   if (correctCount >= 20) stage = 3;
   else if (correctCount >= 10) stage = 2;
-  return `./images/${char.id}_${stage}.png`;
+  return charImagePath(char.id, stage);
 }
 
 function errText(err) {
@@ -128,6 +131,7 @@ $('profile-back').onclick = () => {
   showView('view-join');
 };
 
+// 캐릭터 선택 버튼 목록 (그림 + 이름)
 function buildCharGrid() {
   const grid = $('char-grid');
   grid.innerHTML = '';
@@ -139,19 +143,35 @@ function buildCharGrid() {
     b.style.flexDirection = 'column';
     b.style.alignItems = 'center';
     b.style.gap = '6px';
-    b.innerHTML = `
-      <img src="./images/${char.id}_1.png" alt="${char.name}" style="width: 56px; height: 56px; object-fit: contain;">
-      <span>${char.name}</span>
-    `;
+
+    const img = document.createElement('img');
+    img.src = charImagePath(char.id, 1);
+    img.alt = char.name;
+    const label = document.createElement('span');
+    label.textContent = char.name;
+    b.append(img, label);
+
     b.setAttribute('aria-pressed', 'false');
     b.onclick = () => {
       selectedChar = i + 1;
       [...grid.children].forEach((c, j) => {
         c.setAttribute('aria-pressed', j === i ? 'true' : 'false');
       });
+      showCharPreview(char);
     };
     grid.append(b);
   });
+}
+
+// 선택한 캐릭터의 3단계(처음, 10개, 20개) 모습을 미리 보여 준다
+function showCharPreview(char) {
+  $('preview-name').textContent = `${char.name} 선택`;
+  [1, 2, 3].forEach(stage => {
+    const img = $(`preview-${stage}`);
+    img.src = charImagePath(char.id, stage);
+    img.alt = `${char.name} ${stage}단계`;
+  });
+  $('char-preview').classList.remove('hidden');
 }
 
 $('enter-btn').onclick = async () => {
@@ -229,7 +249,15 @@ function startQuestion(data) {
 }
 
 function renderQuestion() {
-  $('my-char-img').src = getCharacterImage(me.characterId, myCorrectCount);
+  // 맞힌 개수(10, 20개)에 따라 캐릭터 그림이 바뀌면 잠깐 커지는 효과를 준다
+  const img = $('my-char-img');
+  const next = getCharacterImage(me.characterId, myCorrectCount);
+  if (img.getAttribute('src') !== next) {
+    img.src = next;
+    img.style.transform = 'scale(1.15)';
+    setTimeout(() => { img.style.transform = ''; }, 300);
+  }
+
   $('q-index').textContent = `${question.index} / ${question.total}`;
   $('q-type').textContent = question.type === 'mc' ? '객관식' : '초성 서답형';
   $('q-body').textContent = question.body;
@@ -386,3 +414,4 @@ $('q-input').addEventListener('keydown', e => {
 $('next-btn').onclick = () => route();
 
 init();
+
