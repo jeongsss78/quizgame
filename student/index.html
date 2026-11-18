@@ -8,6 +8,62 @@
   <link rel="stylesheet" href="../shared/glass.css">
   <style>
     #msg:empty { display: none; }
+
+    /* ---- 캐릭터 선택 화면 ---- */
+    .char-btn img {
+      width: 88px;
+      height: 88px;
+      max-width: 18vw;
+      max-height: 18vw;
+      object-fit: contain;
+    }
+    .char-preview {
+      border: 1px solid currentColor;
+      border-radius: 12px;
+      padding: 12px;
+      opacity: 1;
+    }
+    .char-preview .preview-name {
+      margin: 0 0 8px;
+      font-weight: 700;
+      text-align: center;
+    }
+    .preview-stages {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+    }
+    .preview-stages figure {
+      margin: 0;
+      text-align: center;
+    }
+    .preview-stages img {
+      width: 120px;
+      height: 120px;
+      max-width: 26vw;
+      max-height: 26vw;
+      object-fit: contain;
+    }
+    .preview-stages figcaption {
+      margin-top: 4px;
+      font-size: 13px;
+      opacity: .75;
+    }
+
+    /* ---- 문제 화면 상단의 내 캐릭터 (48px → 240px) ---- */
+    .char-stage {
+      display: flex;
+      justify-content: center;
+      margin: 4px 0 8px;
+    }
+    .char-stage img {
+      width: 240px;
+      height: 240px;
+      max-width: 60vw;
+      max-height: 60vw;
+      object-fit: contain;
+      transition: transform .3s ease;
+    }
   </style>
 </head>
 <body class="mode-chromebook">
@@ -31,8 +87,19 @@
         <h1>별명과 캐릭터</h1>
         <label for="nick-input">별명 (한글, 영문, 숫자 1~8자)</label>
         <input id="nick-input" class="input" maxlength="8" autocomplete="off">
-        <p class="muted">캐릭터를 하나 골라 주세요.</p>
+        <p class="muted">캐릭터를 하나 골라 주세요. 문제를 10개, 20개 맞히면 모습이 바뀌어요.</p>
         <div id="char-grid" class="char-grid"></div>
+
+        <!-- 선택한 캐릭터 미리보기 (처음 / 10개 / 20개) -->
+        <div id="char-preview" class="char-preview hidden" aria-live="polite">
+          <p id="preview-name" class="preview-name"></p>
+          <div class="preview-stages">
+            <figure><img id="preview-1" src="" alt=""><figcaption>처음</figcaption></figure>
+            <figure><img id="preview-2" src="" alt=""><figcaption>10개 맞히면</figcaption></figure>
+            <figure><img id="preview-3" src="" alt=""><figcaption>20개 맞히면</figcaption></figure>
+          </div>
+        </div>
+
         <button id="enter-btn" class="btn btn-primary btn-lg btn-block" type="button">입장하기</button>
         <button id="profile-back" class="btn btn-block" type="button">코드 다시 입력</button>
       </div>
@@ -46,11 +113,11 @@
 
       <!-- 4. 문제 풀기 -->
       <div id="view-play" class="stack hidden">
+        <div class="char-stage">
+          <img id="my-char-img" src="" alt="내 캐릭터">
+        </div>
         <div class="row space" style="align-items: center;">
-          <div class="row" style="align-items: center; gap: 10px;">
-            <img id="my-char-img" src="" alt="내 캐릭터" style="width: 48px; height: 48px; object-fit: contain;">
-            <span id="q-index" class="muted"></span>
-          </div>
+          <span id="q-index" class="muted"></span>
           <span id="q-timer" class="timer"></span>
         </div>
         <div class="progress" aria-hidden="true"><div id="q-bar" class="progress-bar"></div></div>
